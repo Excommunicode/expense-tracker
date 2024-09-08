@@ -35,8 +35,6 @@ class TransactionServiceImplTest {
     private final LimitRepository limitRepository;
     private final UserRepository userRepository;
 
-
-
     private Transaction transaction;
     private User accountFrom;
     private User acccountTo;
