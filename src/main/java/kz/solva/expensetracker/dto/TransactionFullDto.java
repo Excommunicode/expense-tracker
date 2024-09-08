@@ -1,6 +1,5 @@
 package kz.solva.expensetracker.dto;
 
-import kz.solva.expensetracker.model.CurrencyCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class TranslationFullDto implements Serializable {
+public class TransactionFullDto implements Serializable {
     private Long id;
-    private String accountFrom;
-    private String accountTo;
+    private Long accountFrom;
+    private Long accountTo;
     private BigDecimal sum;
     private String expenseCategory;
     private LocalDateTime datetime;

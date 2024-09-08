@@ -2,9 +2,12 @@ package kz.solva.expensetracker.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,13 +26,15 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Table(name = "exchange_rates")
-public class ExchangeRates {
+public class ExchangeRate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "currency_pair", nullable = false)
-    private String currencyPair;
+    @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "currency_pair", nullable = false)
+    private CurrencyPair currencyPair;
 
     @Column(nullable = false)
     private BigDecimal rate;
@@ -41,7 +46,7 @@ public class ExchangeRates {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ExchangeRates that = (ExchangeRates) o;
+        ExchangeRate that = (ExchangeRate) o;
         return Objects.equals(getId(), that.getId()) && Objects.equals(getCurrencyPair(), that.getCurrencyPair()) && Objects.equals(getRate(), that.getRate()) && Objects.equals(getUpdatedAt(), that.getUpdatedAt());
     }
 

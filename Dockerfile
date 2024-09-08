@@ -1,4 +1,3 @@
-FROM ubuntu:latest
-LABEL authors="faruh"
-
-ENTRYPOINT ["top", "-b"]
+FROM amazoncorretto:21-alpine-jdk
+COPY target/*.jar expense-tracker.jar
+ENTRYPOINT ["java","-jar","/expense-tracker.jar"]

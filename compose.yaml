@@ -1,9 +1,22 @@
+version: '3.8'
 services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+  tracker:
+    build: .
+    image: tracker
     ports:
-      - '5432'
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/trackerDb
+      - SPRING_DATASOURCE_USERNAME=Faruh
+      - SPRING_DATASOURCE_PASSWORD=iamroot
+
+  db:
+    image: postgres:15.1-alpine
+    ports:
+      - "6531:5432"
+    environment:
+      - POSTGRES_DB=trackerDb
+      - POSTGRES_USER=Faruh
+      - POSTGRES_PASSWORD=iamroot

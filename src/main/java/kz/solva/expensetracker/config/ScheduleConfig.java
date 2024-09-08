@@ -1,2 +1,9 @@
-package kz.solva.expensetracker.config;public class ScheduleConfig {
+package kz.solva.expensetracker.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@Configuration
+@EnableScheduling
+public class ScheduleConfig {
 }
