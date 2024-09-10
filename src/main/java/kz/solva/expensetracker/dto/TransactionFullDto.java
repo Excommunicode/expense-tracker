@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +18,7 @@ public class TransactionFullDto implements Serializable {
     private Long accountTo;
     private BigDecimal sum;
     private String expenseCategory;
-    private LocalDateTime datetime;
+    private String datetime;
     private Boolean limitExceeded;
     private Long limitId;
     private BigDecimal limitSum;

@@ -41,7 +41,7 @@ public class TransactionDto implements Serializable {
     @Size(min = 1, message = "Expense category must not be empty")
     private String expenseCategory;
 
-    private LocalDateTime datetime;
+    private String datetime;
 
     private Boolean limitExceeded;
 

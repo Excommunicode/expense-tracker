@@ -78,9 +78,9 @@ class LimitServiceImplTest {
 
         Limit limitFromDb = limitRepository.findById(saved.getId()).orElse(null);
 
-        Limit expectedLimit = limitMapper.toEntity(saved);
+        LimitDto limitMapperDto = limitMapper.toDto(limitFromDb);
 
-        assertEquals(expectedLimit, limitFromDb);
+        assertEquals(limitMapperDto, saved);
     }
 
 
@@ -96,11 +96,11 @@ class LimitServiceImplTest {
         LimitDto saved = limitService.createLimit(limitForKZT);
         System.err.println(saved);
         Limit limitFromDb = limitRepository.findById(saved.getId()).orElse(null);
+        LimitDto limitMapperDto = limitMapper.toDto(limitFromDb);
 
-        Limit expectedLimit = limitMapper.toEntity(saved);
 
-        assertEquals(expectedLimit, limitFromDb);
-        assertEquals(expectedLimit.getLimitSum(), BigDecimal.valueOf(100));
+        assertEquals(saved, limitMapperDto);
+        assertEquals(saved.getLimitSum(), BigDecimal.valueOf(100));
     }
 
     @Test
@@ -116,11 +116,11 @@ class LimitServiceImplTest {
 
         Limit limitFromDb = limitRepository.findById(saved.getId()).orElse(null);
 
-        Limit expectedLimit = limitMapper.toEntity(saved);
+        LimitDto limitMapperDto = limitMapper.toDto(limitFromDb);
 
-        assertEquals(expectedLimit, limitFromDb);
+        assertEquals(saved, limitMapperDto);
 
-        assertEquals(expectedLimit.getLimitSum(), BigDecimal.valueOf(1000));
+        assertEquals(saved.getLimitSum(), BigDecimal.valueOf(1000));
 
     }
 }

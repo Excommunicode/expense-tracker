@@ -11,11 +11,15 @@ import org.mapstruct.ReportingPolicy;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static kz.solva.expensetracker.constant.Constant.DATA_TIME_FORMATTER;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface LimitMapper {
 
+    @Mapping(target = "limitDatetime", source = "limitDatetime", dateFormat = DATA_TIME_FORMATTER)
     Limit toEntity(LimitDto limitDto);
 
+    @Mapping(target = "limitDatetime", source = "limitDatetime", dateFormat = DATA_TIME_FORMATTER)
     LimitDto toDto(Limit limit);
 
     @Mapping(target = "user.id", source = "userId")

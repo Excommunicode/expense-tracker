@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -25,9 +24,19 @@ public class LimitDto implements Serializable {
     private BigDecimal limitSum;
 
     @NotNull(message = "Limit datetime must not be null.")
-    private LocalDateTime limitDatetime;
+    private String limitDatetime;
 
     @NotNull(message = "Limit currency shortname must not be null.")
     @Size(min = 3, max = 3, message = "Limit currency shortname must be exactly 3 characters long.")
     private String limitCurrencyShortname;
+
+    @Override
+    public String toString() {
+        return "LimitDto{" +
+                "id=" + id +
+                ", limitSum=" + limitSum +
+                ", limitDatetime='" + limitDatetime + '\'' +
+                ", limitCurrencyShortname='" + limitCurrencyShortname + '\'' +
+                '}';
+    }
 }

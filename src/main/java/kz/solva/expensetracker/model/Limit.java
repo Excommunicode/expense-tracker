@@ -62,4 +62,16 @@ public class Limit {
     public int hashCode() {
         return Objects.hash(getId(), getLimitSum(), getLimitDatetime(), getLimitCurrencyShortname());
     }
+
+    @Override
+    public String toString() {
+        return "Limit{" +
+                "id=" + id +
+                ", limitSum=" + limitSum +
+                ", limitDatetime=" + limitDatetime +
+                ", limitCurrencyShortname=" + limitCurrencyShortname +
+                ", category=" + category +
+                ", user=" + user +
+                '}';
+    }
 }
