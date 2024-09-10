@@ -10,7 +10,8 @@ import java.util.List;
 public interface LimitRepository extends JpaRepository<Limit, Long> {
     @Query("SELECT l " +
             "FROM Limit l " +
-            "WHERE l.id in :limitsIds")
+            "WHERE l.id in :limitsIds " +
+            "ORDER BY l.id")
     List<Limit> findAllByIdIn(List<Long> limitsIds);
 
     @Query("SELECT CASE WHEN COUNT(l) > 0 THEN true ELSE false END " +

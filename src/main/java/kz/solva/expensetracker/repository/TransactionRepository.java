@@ -13,8 +13,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t " +
             "FROM Transaction t " +
             "JOIN FETCH t.limit l " +
-            "WHERE (t.accountFrom = :userId OR t.accountTo = :userId) " +
-            "AND t.limitExceeded = true")
+            "WHERE (t.accountFrom.id = :userId OR t.accountTo.id = :userId) " +
+            "AND t.limitExceeded = true " +
+            "ORDER BY t.id DESC")
     List<Transaction> findAllByAccountFromOrAccountToAfterAndLimitExceeded(Long userId);
 
 

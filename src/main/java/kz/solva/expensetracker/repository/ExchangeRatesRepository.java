@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public interface ExchangeRatesRepository extends JpaRepository<ExchangeRate, Long> {
 
-   @Query("SELECT e " +
-           "FROM ExchangeRate e " +
-           "WHERE e.currencyPair = :currencyPair " +
-           "ORDER BY e.updatedAt DESC " +
-           "LIMIT 1")
+    @Query("SELECT e " +
+            "FROM ExchangeRate e " +
+            "WHERE e.currencyPair = :currencyPair " +
+            "ORDER BY e.updatedAt DESC " +
+            "LIMIT 1")
     Optional<ExchangeRate> findByUpdatedAtAndCurrencyPair(CurrencyPair currencyPair);
 }

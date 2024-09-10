@@ -28,13 +28,6 @@ public interface TransactionMapper {
     })
     TransactionDto toDto(Transaction transaction);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mappings({
-            @Mapping(target = "accountFrom.id", source = "accountFrom"),
-            @Mapping(target = "accountTo.id", source = "accountTo")
-    })
-    Transaction partialUpdate(TransactionDto transactionDto, @MappingTarget Transaction transaction);
-
     @Mappings({
             @Mapping(target = "accountFrom", source = "accountFrom.id"),
             @Mapping(target = "accountTo", source = "accountTo.id")

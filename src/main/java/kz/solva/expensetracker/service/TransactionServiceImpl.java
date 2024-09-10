@@ -2,12 +2,14 @@ package kz.solva.expensetracker.service;
 
 import kz.solva.expensetracker.dto.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
+import kz.solva.expensetracker.exception.NotFoundException;
 import kz.solva.expensetracker.mapper.LimitMapper;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.Limit;
 import kz.solva.expensetracker.model.Transaction;
 import kz.solva.expensetracker.repository.LimitRepository;
 import kz.solva.expensetracker.repository.TransactionRepository;
+import kz.solva.expensetracker.repository.UserRepository;
 import kz.solva.expensetracker.service.api.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +22,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kz.solva.expensetracker.model.CurrencyCode.USD;
 
@@ -34,42 +38,67 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper transactionMapper;
     private final LimitRepository limitRepository;
     private final LimitMapper limitMapper;
+    private final UserRepository userRepository;
 
 
     @Override
     @Transactional
     public TransactionDto addTransaction(Transaction transaction) {
+        log.info("Starting addTransaction with transaction: {}", transaction);
+
         Limit applicableLimit = resolveApplicableLimit(transaction);
         transaction.setLimit(applicableLimit);
+        log.debug("Applicable limit resolved: {}", applicableLimit);
 
         boolean isLimitExceeded = checkLimitTransaction(transaction);
         transaction.setLimitExceeded(isLimitExceeded);
+        log.info("Transaction limit exceeded check result: {}", isLimitExceeded);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
+        log.info("Transaction saved: {}", savedTransaction);
+
         return transactionMapper.toDto(savedTransaction);
     }
 
 
     @Override
     public List<TransactionFullDto> findExceededTransaction(Long userId) {
-        List<Transaction> exceededTransactions = transactionRepository.findAllByAccountFromOrAccountToAfterAndLimitExceeded(userId);
+        log.info("Starting findExceededTransaction for userId: {}", userId);
+
+        existsUserById(userId);
+        log.debug("User exists with userId: {}", userId);
+
+        List<Transaction> exceededTransactions = transactionRepository
+                .findAllByAccountFromOrAccountToAfterAndLimitExceeded(userId);
+        log.info("Exceeded transactions found: {}", exceededTransactions.size());
 
         List<Long> transactionIds = exceededTransactions.stream()
                 .map(transaction -> transaction.getLimit().getId())
                 .toList();
+        log.debug("Extracted transaction IDs: {}", transactionIds);
 
         List<Limit> limits = limitRepository.findAllByIdIn(transactionIds);
-        List<TransactionFullDto> fullDtoList = transactionMapper.toFullDtoList(exceededTransactions);
+        log.debug("Limits retrieved: {}", limits.size());
 
-        for (TransactionFullDto transactionFullDto : fullDtoList) {
-            for (Limit limit : limits) {
-                if (Objects.equals(transactionFullDto.getLimitId(), limit.getId())) {
-                    transactionFullDto.setLimitSum(limit.getLimitSum());
-                }
+        Map<Long, Limit> limitMap = limits.stream()
+                .collect(Collectors.toMap(Limit::getId, limit -> limit));
+        log.debug("Limit map created");
+
+        List<TransactionFullDto> fullDtoList = transactionMapper.toFullDtoList(exceededTransactions);
+        log.info("Transaction DTO list created with size: {}", fullDtoList.size());
+
+        fullDtoList.forEach(transactionFullDto -> {
+            Limit limit = limitMap.get(transactionFullDto.getLimitId());
+            if (limit != null) {
+                transactionFullDto.setLimitSum(limit.getLimitSum());
+                log.debug("Set limit sum for transactionFullDto with limitId: {}", transactionFullDto.getLimitId());
             }
-        }
+        });
+
         return fullDtoList;
     }
+
+
 
     private Limit resolveApplicableLimit(Transaction transaction) {
         if (Objects.isNull(transaction.getLimit())) {
@@ -108,5 +137,14 @@ public class TransactionServiceImpl implements TransactionService {
 
         return limitRepository.save(defualtLimit);
     }
+
+    private void existsUserById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw NotFoundException.builder()
+                    .message(String.format("User with id: %s not found", userId))
+                    .build();
+        }
+    }
+
 
 }

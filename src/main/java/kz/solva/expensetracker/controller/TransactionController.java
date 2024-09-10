@@ -27,14 +27,15 @@ public class TransactionController {
 
     @PostMapping
     public TransactionDto createTransaction(@Valid @RequestBody TransactionDto transactionDto) {
-        log.info("Received request to create transaction: {}", transactionDto);
+        log.info("Endpoint /api/v1/transactions POST started. Received request to create transaction: {}", transactionDto);
         Transaction entity = transactionMapper.toEntity(transactionDto);
         return transactionService.addTransaction(entity);
     }
 
     @GetMapping("/{userId}")
     public List<TransactionFullDto> findExceededTransaction(@PathVariable Long userId) {
-       return transactionService.findExceededTransaction(userId);
+        log.info("Endpoint /api/v1/transactions/{userId} GET started. User ID: {}", userId);
+        return transactionService.findExceededTransaction(userId);
     }
 
 }

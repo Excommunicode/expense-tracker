@@ -36,16 +36,25 @@ public class LimitServiceImpl implements LimitService {
     @Override
     @Transactional
     public LimitDto createLimit(Limit limit) {
+        log.info("Starting createLimit with limit: {}", limit);
+
         LocalDateTime now = LocalDateTime.now();
+        log.debug("Current time: {}", now);
+
         CurrencyCode currencyCode = limit.getLimitCurrencyShortname();
         BigDecimal limitSum = limit.getLimitSum();
-        BigDecimal convertedSum = checkCurrencyShortName(currencyCode, limitSum);
+        log.debug("Limit currency: {}, Limit sum: {}", currencyCode, limitSum);
 
+        BigDecimal convertedSum = checkCurrencyShortName(currencyCode, limitSum);
+        log.info("Converted limit sum: {}", convertedSum);
 
         Limit createdLimit = limitMapper.createLimit(convertedSum, now, currencyCode, limit.getUser().getId());
+        log.debug("Created limit entity: {}", createdLimit);
+
         Limit saved = limitRepository.save(createdLimit);
-        LimitDto dto = limitMapper.toDto(saved);
-        return dto;
+        log.info("Saved limit entity: {}", saved);
+
+        return limitMapper.toDto(saved);
     }
 
 

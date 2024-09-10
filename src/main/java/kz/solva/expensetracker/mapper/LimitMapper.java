@@ -13,9 +13,11 @@ import java.time.LocalDateTime;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface LimitMapper {
+
     Limit toEntity(LimitDto limitDto);
 
     LimitDto toDto(Limit limit);
+
     @Mapping(target = "user.id", source = "userId")
     Limit createLimit(BigDecimal limitSum, LocalDateTime limitDatetime, CurrencyCode limitCurrencyShortname, Long userId);
 }
