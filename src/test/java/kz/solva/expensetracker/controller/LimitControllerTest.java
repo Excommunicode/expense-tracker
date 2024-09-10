@@ -70,5 +70,4 @@ class LimitControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limitCurrencyShortname").value("USD"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limitDatetime").value(DEFAULT_LIMIT_DATETIME.toString()));
     }
-
 }

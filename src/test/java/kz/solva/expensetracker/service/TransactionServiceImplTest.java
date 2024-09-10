@@ -77,14 +77,14 @@ class TransactionServiceImplTest {
         TransactionDto savedDto = transactionService.addTransaction(transaction);
 
         Transaction savedTransaction = transactionRepository.findById(savedDto.getId()).orElse(null);
+        TransactionDto transactionDto = transactionMapper.toDto(savedTransaction);
 
-        Transaction expectedTransaction = transactionMapper.toEntity(savedDto);
 
-        assertEquals(expectedTransaction.getId(), savedTransaction.getId());
-        assertEquals(expectedTransaction.getCurrencyShortname(), savedTransaction.getCurrencyShortname());
-        assertEquals(expectedTransaction.getSum(), savedTransaction.getSum());
-        assertEquals(expectedTransaction.getExpenseCategory(), savedTransaction.getExpenseCategory());
-        assertEquals(expectedTransaction.getDatetime(), savedTransaction.getDatetime());
+        assertEquals(savedDto.getId(), transactionDto.getId());
+        assertEquals(savedDto.getCurrencyShortname(), transactionDto.getCurrencyShortname());
+        assertEquals(savedDto.getSum(), transactionDto.getSum());
+        assertEquals(savedDto.getExpenseCategory(), transactionDto.getExpenseCategory());
+        assertEquals(savedDto.getDatetime(), transactionDto.getDatetime());
 
     }
 
