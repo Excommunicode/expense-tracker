@@ -74,8 +74,6 @@ class TransactionServiceImplTest {
 
     @Test
     void addTransaction_WithEmptyLimit() {
-
-        System.err.println(transaction);
         TransactionDto savedDto = transactionService.addTransaction(transaction);
 
         Transaction savedTransaction = transactionRepository.findById(savedDto.getId()).orElse(null);
