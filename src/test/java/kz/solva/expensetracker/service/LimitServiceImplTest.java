@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 @SpringBootTest
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class LimitServiceImplTest {
     private final LimitService limitService;
     private final LimitRepository limitRepository;

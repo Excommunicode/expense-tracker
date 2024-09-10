@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static kz.solva.expensetracker.model.CurrencyCode.USD;
@@ -33,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @SpringBootTest
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class TransactionServiceImplTest {
     private final TransactionService transactionService;
     private final TransactionRepository transactionRepository;
@@ -46,6 +45,7 @@ class TransactionServiceImplTest {
     private User accountFrom;
     private User acccountTo;
     private Limit limit;
+
     @BeforeEach
     void setUp() {
         accountFrom = Instancio.of(User.class).ignore(Select.field(User::getId)).create();
