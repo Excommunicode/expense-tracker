@@ -2,6 +2,7 @@ package kz.solva.expensetracker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.solva.expensetracker.dto.TransactionDto;
+import kz.solva.expensetracker.dto.TransactionFullDto;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.Transaction;
 import kz.solva.expensetracker.service.api.TransactionService;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -89,6 +92,21 @@ class TransactionControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.datetime").value(DEFAULT_DATETIME))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limitExceeded").value(DEFAULT_LIMIT_EXCEEDED))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limitId").value(DEFAULT_LIMIT_ID));
+    }
+
+    @Test
+    @SneakyThrows
+    void findExceededTransactionTest() {
+        Long testUserId = 1L;
+        List<TransactionFullDto> testTransactionFullDtos = new ArrayList<>();
+
+        when(transactionService.findExceededTransaction(testUserId)).thenReturn(testTransactionFullDtos);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/transactions/{userId}", testUserId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(testTransactionFullDtos)));
+
     }
 
 }
