@@ -100,7 +100,7 @@ class TransactionServiceImplTest {
                 .limit(10)
                 .toList();
 
-        List<Transaction> savedAll = transactionRepository.saveAll(transactions);
+        transactionRepository.saveAll(transactions);
 
         List<TransactionFullDto> exceededTransaction = transactionService.findExceededTransaction(accountFrom.getId());
         exceededTransaction.sort(Comparator.comparing(TransactionFullDto::getId).reversed());

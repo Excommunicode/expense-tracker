@@ -47,6 +47,9 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
     @Transactional
     @Scheduled(cron = "0 0 9,15 * * *")
     public void syncDailyCurrencyRates() {
+        LocalDateTime now = LocalDateTime.now();
+
+
         String jsonResponseRateUsd = restTemplate.getForObject(exchangeRateUsd, String.class);
         String jsonResponseRateKzt = restTemplate.getForObject(exchangeRateKzt, String.class);
 
@@ -58,8 +61,6 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
 
         double kztUsd = jsonNodeRateKzt.path("conversion_rates").path(KZT.getCode()).asDouble();
         double rubUsd = jsonNodeRateKzt.path("conversion_rates").path(RUB.getCode()).asDouble();
-
-        LocalDateTime now = LocalDateTime.now();
 
         saveExchangeRate(USD_KZT, usdKzt, now);
         saveExchangeRate(USD_RUB, usdRub, now);

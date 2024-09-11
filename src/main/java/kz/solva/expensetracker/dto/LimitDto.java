@@ -29,14 +29,4 @@ public class LimitDto implements Serializable {
     @NotNull(message = "Limit currency shortname must not be null.")
     @Size(min = 3, max = 3, message = "Limit currency shortname must be exactly 3 characters long.")
     private String limitCurrencyShortname;
-
-    @Override
-    public String toString() {
-        return "LimitDto{" +
-                "id=" + id +
-                ", limitSum=" + limitSum +
-                ", limitDatetime='" + limitDatetime + '\'' +
-                ", limitCurrencyShortname='" + limitCurrencyShortname + '\'' +
-                '}';
-    }
 }

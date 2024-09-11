@@ -21,11 +21,9 @@ public class TransactionDto implements Serializable {
     private Long id;
 
     @NotNull(message = "Account from must not be null")
-    @Size(min = 1, message = "Account from must not be empty")
     private Long accountFrom;
 
     @NotNull(message = "Account to must not be null")
-    @Size(min = 1, message = "Account to must not be empty")
     private Long accountTo;
 
     @NotNull(message = "Currency shortname must not be null")
