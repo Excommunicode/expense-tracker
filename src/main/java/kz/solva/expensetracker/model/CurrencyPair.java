@@ -1,8 +1,10 @@
 package kz.solva.expensetracker.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum CurrencyPair {
     USD_KZT("USD/KZT"),
     USD_RUB("USD/RUB"),
@@ -11,8 +13,6 @@ public enum CurrencyPair {
 
     private final String pair;
 
-    CurrencyPair(String pair) {
-        this.pair = pair;
-    }
+
 
 }

@@ -1,8 +1,10 @@
 package kz.solva.expensetracker.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum ExpenseCategory {
     GOODS("Товары"),
     SERVICES("Услуги");
@@ -10,9 +12,6 @@ public enum ExpenseCategory {
     private final String description;
 
 
-    ExpenseCategory(String description) {
-        this.description = description;
 
-    }
 }
 
