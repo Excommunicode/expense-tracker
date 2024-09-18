@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 @Data
@@ -43,4 +44,17 @@ public class TransactionDto implements Serializable {
     private Boolean limitExceeded;
 
     private Long limitId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransactionDto that = (TransactionDto) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getAccountFrom(), that.getAccountFrom()) && Objects.equals(getAccountTo(), that.getAccountTo()) && Objects.equals(getCurrencyShortname(), that.getCurrencyShortname()) && Objects.equals(getSum(), that.getSum()) && Objects.equals(getExpenseCategory(), that.getExpenseCategory()) && Objects.equals(getDatetime(), that.getDatetime()) && Objects.equals(getLimitExceeded(), that.getLimitExceeded()) && Objects.equals(getLimitId(), that.getLimitId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getAccountFrom(), getAccountTo(), getCurrencyShortname(), getSum(), getExpenseCategory(), getDatetime(), getLimitExceeded(), getLimitId());
+    }
 }
