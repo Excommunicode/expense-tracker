@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 import static kz.solva.expensetracker.model.CurrencyCode.KZT;
 import static kz.solva.expensetracker.model.CurrencyCode.RUB;
@@ -42,6 +44,8 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
     @Value("${exchange.rate.api.url.kzt}")
     private String exchangeRateKzt;
 
+    
+    @Async
     @Override
     @SneakyThrows
     @Transactional
@@ -49,9 +53,16 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
     public void syncDailyCurrencyRates() {
         LocalDateTime now = LocalDateTime.now();
 
+        CompletableFuture<String> usdResponseFuture = CompletableFuture.supplyAsync(() -> restTemplate.getForObject(exchangeRateUsd, String.class));
+        CompletableFuture<String> kztResponseFuture = CompletableFuture.supplyAsync(() -> restTemplate.getForObject(exchangeRateKzt, String.class));
 
-        String jsonResponseRateUsd = restTemplate.getForObject(exchangeRateUsd, String.class);
-        String jsonResponseRateKzt = restTemplate.getForObject(exchangeRateKzt, String.class);
+        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(usdResponseFuture, kztResponseFuture);
+
+        combinedFuture.join();
+
+        String jsonResponseRateUsd = usdResponseFuture.get();
+        String jsonResponseRateKzt = kztResponseFuture.get();
+
 
         JsonNode jsonNodeRateUsd = objectMapper.readTree(jsonResponseRateUsd);
         JsonNode jsonNodeRateKzt = objectMapper.readTree(jsonResponseRateKzt);
@@ -61,6 +72,7 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
 
         double kztUsd = jsonNodeRateKzt.path("conversion_rates").path(KZT.getCode()).asDouble();
         double rubUsd = jsonNodeRateKzt.path("conversion_rates").path(RUB.getCode()).asDouble();
+
 
         saveExchangeRate(USD_KZT, usdKzt, now);
         saveExchangeRate(USD_RUB, usdRub, now);

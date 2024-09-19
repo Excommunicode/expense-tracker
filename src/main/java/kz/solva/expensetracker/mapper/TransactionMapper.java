@@ -1,15 +1,13 @@
 package kz.solva.expensetracker.mapper;
 
-import kz.solva.expensetracker.dto.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
+import kz.solva.expensetracker.dto.validate.TransactionDto;
 import kz.solva.expensetracker.model.Transaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-
-import java.util.List;
 
 import static kz.solva.expensetracker.constant.Constant.DATA_TIME_FORMATTER;
 
@@ -26,6 +24,4 @@ public interface TransactionMapper {
     TransactionDto toDto(Transaction transaction);
 
     TransactionFullDto toFullDto(Transaction transaction);
-
-    List<TransactionFullDto> toFullDtoList(List<Transaction> transactions);
 }

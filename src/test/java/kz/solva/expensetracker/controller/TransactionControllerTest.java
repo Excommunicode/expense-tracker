@@ -1,7 +1,7 @@
 package kz.solva.expensetracker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.solva.expensetracker.dto.TransactionDto;
+import kz.solva.expensetracker.dto.validate.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
 import kz.solva.expensetracker.dto.LimitReferencesDto;
 import kz.solva.expensetracker.mapper.TransactionMapper;
@@ -105,7 +105,6 @@ class TransactionControllerTest {
         List<Long> limitsIds = Arrays.asList(1L, 2L, 3L);
 
         List<TransactionFullDto> testTransactionFullDtos = new ArrayList<>();
-
 
         when(transactionService.findExceededTransaction(any(LimitReferencesDto.class))).thenReturn(testTransactionFullDtos);
 

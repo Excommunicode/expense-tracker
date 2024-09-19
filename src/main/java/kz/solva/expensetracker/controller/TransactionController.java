@@ -2,7 +2,7 @@ package kz.solva.expensetracker.controller;
 
 import jakarta.validation.Valid;
 import kz.solva.expensetracker.dto.LimitReferencesDto;
-import kz.solva.expensetracker.dto.TransactionDto;
+import kz.solva.expensetracker.dto.validate.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.Transaction;
