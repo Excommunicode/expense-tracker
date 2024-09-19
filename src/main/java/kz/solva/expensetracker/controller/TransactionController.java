@@ -1,7 +1,7 @@
 package kz.solva.expensetracker.controller;
 
 import jakarta.validation.Valid;
-import kz.solva.expensetracker.dto.validate.LimitReferencesDto;
+import kz.solva.expensetracker.dto.LimitReferencesDto;
 import kz.solva.expensetracker.dto.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
 import kz.solva.expensetracker.mapper.TransactionMapper;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,9 +37,11 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<TransactionFullDto> findExceededTransaction(@RequestBody LimitReferencesDto limitReferencesDto) {
-        log.info("Endpoint /api/v1/transactions/{userId} GET started");
+    public List<TransactionFullDto> findExceededTransaction(@RequestParam List<Long> limitsIds) {
+        log.info("Endpoint /api/v1/transactions for limits with ids {} GET started", limitsIds);
+        LimitReferencesDto limitReferencesDto = new LimitReferencesDto(limitsIds);
         return transactionService.findExceededTransaction(limitReferencesDto);
     }
+
 
 }

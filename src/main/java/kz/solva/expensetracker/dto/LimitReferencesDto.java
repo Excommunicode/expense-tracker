@@ -1,6 +1,5 @@
-package kz.solva.expensetracker.dto.validate;
+package kz.solva.expensetracker.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class LimitReferencesDto {
-    @NotEmpty(message = "limitsIds cannot be empty")
+
     private List<Long> limitsIds;
 }

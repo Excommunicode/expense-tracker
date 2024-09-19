@@ -3,7 +3,7 @@ package kz.solva.expensetracker.service;
 import kz.solva.expensetracker.base.BaseTest;
 import kz.solva.expensetracker.dto.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
-import kz.solva.expensetracker.dto.validate.LimitReferencesDto;
+import kz.solva.expensetracker.dto.LimitReferencesDto;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.ExpenseCategory;
 import kz.solva.expensetracker.model.Limit;

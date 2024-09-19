@@ -2,7 +2,8 @@ package kz.solva.expensetracker.service;
 
 import kz.solva.expensetracker.dto.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
-import kz.solva.expensetracker.dto.validate.LimitReferencesDto;
+import kz.solva.expensetracker.dto.LimitReferencesDto;
+import kz.solva.expensetracker.exception.BadRequestException;
 import kz.solva.expensetracker.mapper.LimitMapper;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.Limit;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +36,6 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper transactionMapper;
     private final LimitRepository limitRepository;
     private final LimitMapper limitMapper;
-
 
 
     @Override
@@ -62,20 +61,33 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<TransactionFullDto> findExceededTransaction(LimitReferencesDto limitReferencesDto) {
 
+        log.info("Called findExceededTransaction with limitReferencesDto: {}", limitReferencesDto);
+        List<Long> limitsIds = limitReferencesDto.getLimitsIds();
+
+        if (Objects.isNull(limitsIds) || limitsIds.isEmpty()) {
+            throw BadRequestException.builder()
+                    .message("Limit ids is empty")
+                    .build();
+        }
+
         List<Transaction> exceededTransactions = transactionRepository.findAllByLimitInAndLimitExceededOrderById(limitReferencesDto.getLimitsIds());
+
+        log.info("Found {} exceeded transactions", exceededTransactions.size());
 
         return exceededTransactions.stream()
                 .map(transaction -> {
+                    log.debug("Processing transaction with ID: {}", transaction.getId());
                     TransactionFullDto dto = transactionMapper.toFullDto(transaction);
                     Limit limit = transaction.getLimit();
                     if (limit != null) {
                         dto.setLimitSum(limit.getLimitSum());
+                        log.debug("Transaction ID: {} has limit with sum: {}", transaction.getId(), limit.getLimitSum());
                     }
+
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
-
 
 
     private Limit resolveApplicableLimit(Transaction transaction) {
@@ -115,8 +127,6 @@ public class TransactionServiceImpl implements TransactionService {
 
         return limitRepository.save(defualtLimit);
     }
-
-
 
 
 }

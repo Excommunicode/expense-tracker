@@ -2,6 +2,8 @@ package kz.solva.expensetracker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kz.solva.expensetracker.dto.TransactionDto;
+import kz.solva.expensetracker.dto.TransactionFullDto;
+import kz.solva.expensetracker.dto.LimitReferencesDto;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.Transaction;
 import kz.solva.expensetracker.service.api.TransactionService;
@@ -18,8 +20,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 @WebMvcTest(TransactionController.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -95,7 +102,25 @@ class TransactionControllerTest {
     @SneakyThrows
     void findExceededTransactionTest() {
 
+        List<Long> limitsIds = Arrays.asList(1L, 2L, 3L);
 
+        List<TransactionFullDto> testTransactionFullDtos = new ArrayList<>();
+
+
+        when(transactionService.findExceededTransaction(any(LimitReferencesDto.class))).thenReturn(testTransactionFullDtos);
+
+
+        String limitsIdsQuery = limitsIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/transactions")
+                        .param("limitsIds", limitsIdsQuery)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(testTransactionFullDtos)));
     }
+
 
 }
