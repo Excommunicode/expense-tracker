@@ -1,14 +1,13 @@
 package kz.solva.expensetracker.service;
 
-import kz.solva.expensetracker.dto.LimitDto;
+import kz.solva.expensetracker.base.BaseTest;
+import kz.solva.expensetracker.dto.validate.LimitDto;
 import kz.solva.expensetracker.mapper.LimitMapper;
 import kz.solva.expensetracker.model.CurrencyPair;
 import kz.solva.expensetracker.model.ExchangeRate;
 import kz.solva.expensetracker.model.Limit;
-import kz.solva.expensetracker.model.User;
 import kz.solva.expensetracker.repository.ExchangeRatesRepository;
 import kz.solva.expensetracker.repository.LimitRepository;
-import kz.solva.expensetracker.repository.UserRepository;
 import kz.solva.expensetracker.service.api.LimitService;
 import lombok.RequiredArgsConstructor;
 import org.instancio.Instancio;
@@ -16,9 +15,6 @@ import org.instancio.Select;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,31 +24,25 @@ import static kz.solva.expensetracker.model.CurrencyCode.RUB;
 import static kz.solva.expensetracker.model.CurrencyCode.USD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Transactional
-@SpringBootTest
-@ActiveProfiles("test")
+
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class LimitServiceImplTest {
+class LimitServiceImplTest extends BaseTest {
     private final LimitService limitService;
     private final LimitRepository limitRepository;
     private final LimitMapper limitMapper;
     private final ExchangeRatesRepository exchangeRatesRepository;
-    private final UserRepository userRepository;
+
 
     private Limit limit;
-    private User user;
+
 
     @BeforeEach
     void setUp() {
-        user = Instancio.of(User.class)
-                .ignore(Select.field(User::getId))
-                .create();
-        user = userRepository.save(user);
+
 
         limit = Instancio.of(Limit.class)
                 .ignore(Select.field(Limit::getId))
                 .set(Select.field(Limit::getLimitCurrencyShortname), USD)
-                .set(Select.field(Limit::getUser), user)
                 .create();
 
         ExchangeRate exchangeRateKzt = ExchangeRate.builder()
@@ -90,11 +80,11 @@ class LimitServiceImplTest {
                 .ignore(Select.field(Limit::getId))
                 .set(Select.field(Limit::getLimitCurrencyShortname), KZT)
                 .set(Select.field(Limit::getLimitSum), BigDecimal.valueOf(45000))
-                .set(Select.field(Limit::getUser), user)
+
                 .create();
 
         LimitDto saved = limitService.createLimit(limitForKZT);
-        System.err.println(saved);
+
         Limit limitFromDb = limitRepository.findById(saved.getId()).orElse(null);
         LimitDto limitMapperDto = limitMapper.toDto(limitFromDb);
 
@@ -109,7 +99,7 @@ class LimitServiceImplTest {
                 .ignore(Select.field(Limit::getId))
                 .set(Select.field(Limit::getLimitCurrencyShortname), RUB)
                 .set(Select.field(Limit::getLimitSum), BigDecimal.valueOf(90000))
-                .set(Select.field(Limit::getUser), user)
+
                 .create();
 
         LimitDto saved = limitService.createLimit(limitForUSD);

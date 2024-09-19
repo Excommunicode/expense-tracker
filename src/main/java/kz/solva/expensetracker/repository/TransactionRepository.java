@@ -9,19 +9,18 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-
-    @Query("SELECT t " +
-            "FROM Transaction t " +
-            "JOIN FETCH t.limit l " +
-            "WHERE (t.accountFrom.id = :userId OR t.accountTo.id = :userId) " +
-            "AND t.limitExceeded = true " +
-            "ORDER BY t.id DESC")
-    List<Transaction> findAllByAccountFromOrAccountToAfterAndLimitExceeded(Long userId);
-
-
     @Query("SELECT SUM(t.sum) " +
             "FROM Transaction t " +
             "JOIN t.limit l " +
             "WHERE l.id = :limitId")
     Optional<BigDecimal> findTotalSumByLimitId(Long limitId);
+
+
+    @Query("SELECT t " +
+            "FROM Transaction t " +
+            "JOIN FETCH t.limit l " +
+            "WHERE l.id IN :limitsIds " +
+            "AND t.limitExceeded = true " +
+            "ORDER BY t.id DESC")
+    List<Transaction> findAllByLimitInAndLimitExceededOrderById(List<Long> limitsIds);
 }

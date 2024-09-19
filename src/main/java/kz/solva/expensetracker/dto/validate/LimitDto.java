@@ -1,4 +1,4 @@
-package kz.solva.expensetracker.dto;
+package kz.solva.expensetracker.dto.validate;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

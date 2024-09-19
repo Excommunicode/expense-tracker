@@ -33,13 +33,11 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_from", nullable = false)
-    private User accountFrom;
+    @Column(name = "account_from", nullable = false)
+    private Long accountFrom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_to", nullable = false)
-    private User accountTo;
+    @Column(name = "account_to", nullable = false)
+    private Long accountTo;
 
     @Enumerated(EnumType.STRING)
     @JoinColumn(name = "currency_shortname", nullable = false)
@@ -75,4 +73,18 @@ public class Transaction {
         return Objects.hash(getId(), getAccountFrom(), getAccountTo(), getCurrencyShortname(), getSum(), getExpenseCategory(), getDatetime());
     }
 
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", accountFrom=" + accountFrom +
+                ", accountTo=" + accountTo +
+                ", currencyShortname=" + currencyShortname +
+                ", sum=" + sum +
+                ", expenseCategory=" + expenseCategory +
+                ", datetime=" + datetime +
+                ", limitExceeded=" + limitExceeded +
+                ", limit=" + limit +
+                '}';
+    }
 }

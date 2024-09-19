@@ -2,14 +2,13 @@ package kz.solva.expensetracker.service;
 
 import kz.solva.expensetracker.dto.TransactionDto;
 import kz.solva.expensetracker.dto.TransactionFullDto;
-import kz.solva.expensetracker.exception.NotFoundException;
+import kz.solva.expensetracker.dto.validate.LimitReferencesDto;
 import kz.solva.expensetracker.mapper.LimitMapper;
 import kz.solva.expensetracker.mapper.TransactionMapper;
 import kz.solva.expensetracker.model.Limit;
 import kz.solva.expensetracker.model.Transaction;
 import kz.solva.expensetracker.repository.LimitRepository;
 import kz.solva.expensetracker.repository.TransactionRepository;
-import kz.solva.expensetracker.repository.UserRepository;
 import kz.solva.expensetracker.service.api.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionMapper transactionMapper;
     private final LimitRepository limitRepository;
     private final LimitMapper limitMapper;
-    private final UserRepository userRepository;
+
 
 
     @Override
@@ -62,60 +60,40 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public List<TransactionFullDto> findExceededTransaction(Long userId) {
-        log.info("Starting findExceededTransaction for userId: {}", userId);
+    public List<TransactionFullDto> findExceededTransaction(LimitReferencesDto limitReferencesDto) {
 
-        existsUserById(userId);
-        log.debug("User exists with userId: {}", userId);
+        List<Transaction> exceededTransactions = transactionRepository.findAllByLimitInAndLimitExceededOrderById(limitReferencesDto.getLimitsIds());
 
-        List<Transaction> exceededTransactions = transactionRepository
-                .findAllByAccountFromOrAccountToAfterAndLimitExceeded(userId);
-        log.info("Exceeded transactions found: {}", exceededTransactions.size());
-
-        List<Long> transactionIds = exceededTransactions.stream()
-                .map(transaction -> transaction.getLimit().getId())
-                .toList();
-        log.debug("Extracted transaction IDs: {}", transactionIds);
-
-        List<Limit> limits = limitRepository.findAllByIdIn(transactionIds);
-        log.debug("Limits retrieved: {}", limits.size());
-
-        Map<Long, Limit> limitMap = limits.stream()
-                .collect(Collectors.toMap(Limit::getId, limit -> limit));
-        log.debug("Limit map created");
-
-        List<TransactionFullDto> fullDtoList = transactionMapper.toFullDtoList(exceededTransactions);
-        log.info("Transaction DTO list created with size: {}", fullDtoList.size());
-
-        fullDtoList.forEach(transactionFullDto -> {
-            Limit limit = limitMap.get(transactionFullDto.getLimitId());
-            if (limit != null) {
-                transactionFullDto.setLimitSum(limit.getLimitSum());
-                log.debug("Set limit sum for transactionFullDto with limitId: {}", transactionFullDto.getLimitId());
-            }
-        });
-
-        return fullDtoList;
+        return exceededTransactions.stream()
+                .map(transaction -> {
+                    TransactionFullDto dto = transactionMapper.toFullDto(transaction);
+                    Limit limit = transaction.getLimit();
+                    if (limit != null) {
+                        dto.setLimitSum(limit.getLimitSum());
+                    }
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
 
 
     private Limit resolveApplicableLimit(Transaction transaction) {
         if (Objects.isNull(transaction.getLimit())) {
-            return createDefaultLimit(transaction.getAccountFrom().getId());
+            return createDefaultLimit(transaction.getAccountFrom());
         }
 
         Long limitId = transaction.getLimit().getId();
         if (!isLimitValid(limitId)) {
-            return createDefaultLimit(transaction.getAccountFrom().getId());
+            return createDefaultLimit(transaction.getAccountFrom());
         }
 
         return transaction.getLimit();
     }
 
     private boolean isLimitValid(Long limitId) {
-        LocalDate now = LocalDate.now();
-        LocalDate thirtyDaysLater = now.plusDays(30);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thirtyDaysLater = now.plusDays(30);
         return limitRepository.findByIdAndLimitDatetime(limitId, now, thirtyDaysLater);
     }
 
@@ -138,13 +116,7 @@ public class TransactionServiceImpl implements TransactionService {
         return limitRepository.save(defualtLimit);
     }
 
-    private void existsUserById(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw NotFoundException.builder()
-                    .message(String.format("User with id: %s not found", userId))
-                    .build();
-        }
-    }
+
 
 
 }

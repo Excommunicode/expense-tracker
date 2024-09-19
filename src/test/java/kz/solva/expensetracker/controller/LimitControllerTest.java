@@ -1,7 +1,7 @@
 package kz.solva.expensetracker.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.solva.expensetracker.dto.LimitDto;
+import kz.solva.expensetracker.dto.validate.LimitDto;
 import kz.solva.expensetracker.mapper.LimitMapper;
 import kz.solva.expensetracker.model.Limit;
 import kz.solva.expensetracker.service.api.LimitService;

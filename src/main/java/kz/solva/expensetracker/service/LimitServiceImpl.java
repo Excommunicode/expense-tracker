@@ -1,6 +1,6 @@
 package kz.solva.expensetracker.service;
 
-import kz.solva.expensetracker.dto.LimitDto;
+import kz.solva.expensetracker.dto.validate.LimitDto;
 import kz.solva.expensetracker.exception.BadRequestException;
 import kz.solva.expensetracker.exception.NotFoundException;
 import kz.solva.expensetracker.mapper.LimitMapper;
@@ -48,7 +48,7 @@ public class LimitServiceImpl implements LimitService {
         BigDecimal convertedSum = checkCurrencyShortName(currencyCode, limitSum);
         log.info("Converted limit sum: {}", convertedSum);
 
-        Limit createdLimit = limitMapper.createLimit(convertedSum, now, currencyCode, limit.getUser().getId());
+        Limit createdLimit = limitMapper.createLimit(convertedSum, now, currencyCode, limit.getUserId());
         log.debug("Created limit entity: {}", createdLimit);
 
         Limit saved = limitRepository.save(createdLimit);

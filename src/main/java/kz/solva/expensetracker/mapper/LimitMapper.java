@@ -1,6 +1,6 @@
 package kz.solva.expensetracker.mapper;
 
-import kz.solva.expensetracker.dto.LimitDto;
+import kz.solva.expensetracker.dto.validate.LimitDto;
 import kz.solva.expensetracker.model.CurrencyCode;
 import kz.solva.expensetracker.model.Limit;
 import org.mapstruct.Mapper;
@@ -22,6 +22,6 @@ public interface LimitMapper {
     @Mapping(target = "limitDatetime", source = "limitDatetime", dateFormat = DATA_TIME_FORMATTER)
     LimitDto toDto(Limit limit);
 
-    @Mapping(target = "user.id", source = "userId")
+
     Limit createLimit(BigDecimal limitSum, LocalDateTime limitDatetime, CurrencyCode limitCurrencyShortname, Long userId);
 }
