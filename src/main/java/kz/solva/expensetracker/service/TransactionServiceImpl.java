@@ -1,8 +1,8 @@
 package kz.solva.expensetracker.service;
 
-import kz.solva.expensetracker.dto.validate.TransactionDto;
-import kz.solva.expensetracker.dto.TransactionFullDto;
 import kz.solva.expensetracker.dto.LimitReferencesDto;
+import kz.solva.expensetracker.dto.TransactionFullDto;
+import kz.solva.expensetracker.dto.validate.TransactionDto;
 import kz.solva.expensetracker.exception.BadRequestException;
 import kz.solva.expensetracker.mapper.LimitMapper;
 import kz.solva.expensetracker.mapper.TransactionMapper;
@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static kz.solva.expensetracker.model.CurrencyCode.USD;
 
@@ -86,7 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
 
                     return dto;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 

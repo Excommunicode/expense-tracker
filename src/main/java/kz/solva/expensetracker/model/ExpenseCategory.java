@@ -10,8 +10,4 @@ public enum ExpenseCategory {
     SERVICES("Услуги");
 
     private final String description;
-
-
-
 }
-

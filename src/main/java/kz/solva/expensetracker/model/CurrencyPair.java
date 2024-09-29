@@ -12,7 +12,4 @@ public enum CurrencyPair {
     RUB_USD("RUB/USD");
 
     private final String pair;
-
-
-
 }

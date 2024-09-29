@@ -15,10 +15,8 @@ import static kz.solva.expensetracker.constant.Constant.DATA_TIME_FORMATTER;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TransactionMapper {
 
-
     @Mapping(target = "datetime", source = "datetime", dateFormat = DATA_TIME_FORMATTER)
     Transaction toEntity(TransactionDto transactionDto);
-
 
     @Mapping(target = "datetime", source = "datetime", dateFormat = DATA_TIME_FORMATTER)
     TransactionDto toDto(Transaction transaction);

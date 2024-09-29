@@ -13,5 +13,4 @@ public interface LimitRepository extends JpaRepository<Limit, Long> {
             "WHERE l.id = :id " +
             "AND :now BETWEEN l.limitDatetime AND :endDate")
     boolean findByIdAndLimitDatetime(Long id, LocalDateTime now, LocalDateTime endDate);
-
 }

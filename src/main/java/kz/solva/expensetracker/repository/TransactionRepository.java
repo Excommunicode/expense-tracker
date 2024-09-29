@@ -1,5 +1,6 @@
 package kz.solva.expensetracker.repository;
 
+
 import kz.solva.expensetracker.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+
     @Query("SELECT SUM(t.sum) " +
             "FROM Transaction t " +
             "JOIN t.limit l " +

@@ -58,7 +58,6 @@ public class LimitServiceImpl implements LimitService {
     }
 
 
-
     private BigDecimal checkCurrencyShortName(CurrencyCode currencyCode, BigDecimal limitSum) {
         switch (currencyCode) {
             case KZT -> {

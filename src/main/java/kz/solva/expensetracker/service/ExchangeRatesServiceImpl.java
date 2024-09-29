@@ -33,7 +33,7 @@ import static kz.solva.expensetracker.model.CurrencyPair.USD_RUB;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED)
-public class ExchangeRatesServiceImpl implements ExchangeRatesService {
+public class  ExchangeRatesServiceImpl implements ExchangeRatesService {
     private final ExchangeRatesRepository exchangeRatesRepository;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -44,7 +44,7 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
     @Value("${exchange.rate.api.url.kzt}")
     private String exchangeRateKzt;
 
-    
+
     @Async
     @Override
     @SneakyThrows
@@ -62,7 +62,6 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
 
         String jsonResponseRateUsd = usdResponseFuture.get();
         String jsonResponseRateKzt = kztResponseFuture.get();
-
 
         JsonNode jsonNodeRateUsd = objectMapper.readTree(jsonResponseRateUsd);
         JsonNode jsonNodeRateKzt = objectMapper.readTree(jsonResponseRateKzt);
@@ -90,5 +89,4 @@ public class ExchangeRatesServiceImpl implements ExchangeRatesService {
         exchangeRatesRepository.save(exchangeRate);
         log.info("Successfully saved {} rate.", currencyPair);
     }
-
 }
